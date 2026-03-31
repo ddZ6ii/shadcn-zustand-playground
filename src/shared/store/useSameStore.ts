@@ -1,43 +1,34 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import { initDarkMode, toggleMode } from '@/shared/utilities'
+import type { SameStoreState } from '@/shared/schemas'
 
-function toggleMode(darkMode: boolean) {
-  const htmlEl = document.querySelector('html')
-  if (htmlEl) {
-    htmlEl.classList.toggle('dark', darkMode)
-  }
-}
+const STORAGE_KEY = 'same-store'
 
-function initDarkMode() {
-  const initialDarkMode = window.matchMedia(
-    '(prefers-color-scheme: dark)',
-  ).matches
-  toggleMode(initialDarkMode)
-  return initialDarkMode
-}
-
-interface SameStoreState {
-  darkMode: boolean
-  actions: {
-    toggleDarkMode: () => void
-  }
-}
-
-const useSameStore = create<SameStoreState>()((set, get) => ({
-  darkMode: initDarkMode(),
-  actions: {
-    toggleDarkMode: () => {
-      // ⚠️ Side effects inside set()'s callback are not good practice.
-      // That callback should be a pure state transform.
-      // Solution:
-      // 1. Read current state first
-      const nextDarkMode = !get().darkMode
-      // 2. Side effect (sync DOM with the new state before updating the store)
-      toggleMode(nextDarkMode)
-      // 3. Update the store (should be pure)
-      set({ darkMode: nextDarkMode })
+const useSameStore = create<SameStoreState>()(
+  persist(
+    (set, get) => ({
+      darkMode: initDarkMode(STORAGE_KEY),
+      actions: {
+        toggleDarkMode: () => {
+          // ⚠️ Side effects inside set()'s callback are not good practice.
+          // That callback should be a pure state transform.
+          // Solution:
+          // 1. Read current state first
+          // 2. Side effect (sync DOM with the new state before updating the store)
+          // 3. Update the store (should be pure)
+          const nextDarkMode = !get().darkMode
+          toggleMode(nextDarkMode)
+          set({ darkMode: nextDarkMode })
+        },
+      },
+    }),
+    {
+      name: STORAGE_KEY,
+      partialize: (state) => ({ darkMode: state.darkMode }),
     },
-  },
-}))
+  ),
+)
 
 // Atomic selectors
 const useDarkMode = () => useSameStore((state) => state.darkMode)

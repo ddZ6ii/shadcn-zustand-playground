@@ -1,1 +1,1 @@
-export { useDarkMode, useStoreActions } from './useSameStore'
+export * from './useSameStore'
