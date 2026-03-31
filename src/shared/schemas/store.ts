@@ -2,6 +2,7 @@ import z from 'zod'
 
 const SameStoreValueSchema = z.object({
   darkMode: z.boolean(),
+  count: z.number(),
 })
 
 const SameStorePersistedSchema = z.object({
@@ -11,6 +12,9 @@ const SameStorePersistedSchema = z.object({
 
 type SameStoreState = z.infer<typeof SameStoreValueSchema> & {
   actions: {
+    incrementCount: (step?: number) => void
+    resetCount: () => void
+    setCount: (value: number) => void
     toggleDarkMode: () => void
   }
 }

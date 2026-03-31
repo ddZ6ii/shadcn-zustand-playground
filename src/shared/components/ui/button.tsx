@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { Slot } from 'radix-ui'
 
@@ -29,6 +28,9 @@ const buttonVariants = cva(
         'icon-xs': "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
         'icon-sm': 'size-8',
         'icon-lg': 'size-10',
+        'icon-xl': 'size-12',
+        'icon-2xl': 'size-14',
+        'icon-3xl': 'size-16',
       },
     },
     defaultVariants: {

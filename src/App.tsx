@@ -1,17 +1,47 @@
-import { Heading } from '@/shared/components/ui/heading'
-import { PageLayout } from '@/shared/layouts'
+import { Card } from '@/components/ui/card'
+import { ITEMS } from '@/constants'
+import { Header } from '@/shared/components'
+import { Button } from '@/shared/components/ui/button'
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from '@/shared/components/ui/card'
+import { PageLayout, Grid } from '@/shared/layouts'
+import { useStoreActions } from '@/shared/store'
 
 function App() {
+  const { resetCount } = useStoreActions()
+
   return (
     <PageLayout>
-      <div className="mt-4 text-center">
-        <Heading as="h2" className="mb-2 font-bold">
-          One Store. <span className="text-indigo-500">Every Component.</span>
-        </Heading>
-        <p className="text-muted-foreground">
-          All 6 subscribe to the same store <code>useSameStore</code>
-        </p>
-      </div>
+      <Header />
+
+      <Grid className="mt-8">
+        {ITEMS.map((item) => (
+          <Card key={item.id} className="row-span-2 grid grid-rows-subgrid">
+            <CardHeader className="text-center">
+              <CardDescription className="uppercase">
+                {item.description}
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="grid place-items-center items-center">
+              {item.render()}
+            </CardContent>
+          </Card>
+        ))}
+      </Grid>
+
+      <Button
+        variant="outline"
+        className="mx-auto mt-8 block"
+        onClick={() => {
+          resetCount()
+        }}
+      >
+        Reset Count
+      </Button>
     </PageLayout>
   )
 }
